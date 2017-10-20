@@ -7,13 +7,37 @@
 			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-			// Identify website
-			var site_name = "NTD Inspired";
-
-			ga('create', GA_ID, 'auto');
-			ga('require', 'displayfeatures');
-
+			// Store & Load unique User ID into cookie (localStorage)
+			function epochuser () {
+				this.getUUID = function getUUID () {
+					if (localStorage && "_epochUUID" in localStorage) {
+						euid = localStorage._epochUUID;
+					} else {
+						euid = this.euid();
+						localStorage.setItem("_epochUUID",this.euid());
+					}
+					return euid;
+				}
+				this.euid = function () {
+					return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+						var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+						return v.toString(16);
+					});
+				}
+			}
+		
+			// Identify user and website
+			var epoch = {}
+			var user = new epochuser();
+			epoch.uuid = user.getUUID();
+			epoch.site_name = "NTD Inspired";
+		
+			ga('create', GA_ID, 'auto', {		  
+				userId: epoch.uuid
+			});
+			
 			// IA specifics
+			ga('require', 'displayfeatures');
 			ga('set', 'title', ARTICLE_TITLE);
 			ga('set', 'campaignSource', 'Facebook');
 			ga('set', 'campaignMedium', 'Instant Article');
