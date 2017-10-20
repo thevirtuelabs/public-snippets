@@ -19,6 +19,7 @@
 			ga('set', 'campaignMedium', 'Instant Article');
 
 			// Set custom dimensions. RESPECT DIMENSION's IDs
+			// REQUIRED
 			ga('set', 'dimension21', ARTICLE_ID);		// e.g. 314254235 [REQUIRED]
 			ga('set', 'dimension22', ARTICLE_CODE);		// e.g. "NTD Inspired-314254235", always SITE_NAME-ARTICLE_ID [REQUIRED]
 			ga('set', 'dimension23', AUTHOR_NAME);		// e.g. Tomas Masaryk, the name of writer [REQUIRED]
@@ -30,8 +31,10 @@
 			ga('set', 'dimension38', epoch.uuid);		// UUID loaded from cookie, using epochuser object [REQUIRED]
 			ga('set', 'dimension46', PLATFORM);			// "Instant Article", it identifies "web" platform from "Instant Article", casesensitive [REQUIRED]
 			
+			// OPTIONAL
 			ga('set', 'dimension33', WORDCOUNT);		// e.g. 456, wordcount of the article [OPTIONAL]
-			ga('set', 'dimension29', TAG_LIST);			// e.g. ";quantum physics;neuroscience;" list of tags separated by ; [OPTIONAL]
+			ga('set', 'dimension29', TAG_LIST);			// e.g. ";quantum physics;neuroscience;" list of tags separated by ; [OPTIONAL]	
+			ga('set', 'dimension24', PUBLISHER_NAME);	// e.g. Jan Slota, the name of person who published the article [OPTIONAL]
 
 			ga('send', 'pageview');
 		</script>
