@@ -1,0 +1,39 @@
+<figure class="op-tracker">
+	<iframe hidden>
+		<script>
+			// GA Loader
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			// Identify website
+			var site_name = "NTD Inspired";
+
+			ga('create', GA_ID, 'auto');
+			ga('require', 'displayfeatures');
+
+			// IA specifics
+			ga('set', 'title', ARTICLE_TITLE);
+			ga('set', 'campaignSource', 'Facebook');
+			ga('set', 'campaignMedium', 'Instant Article');
+
+			// Set custom dimensions. RESPECT DIMENSION's IDs
+			ga('set', 'dimension21', ARTICLE_ID);		// e.g. 314254235 [REQUIRED]
+			ga('set', 'dimension22', ARTICLE_CODE);		// e.g. "NTD Inspired-314254235", always SITE_NAME-ARTICLE_ID [REQUIRED]
+			ga('set', 'dimension23', AUTHOR_NAME);		// e.g. Tomas Masaryk, the name of writer [REQUIRED]
+			ga('set', 'dimension24', PUBLISHER_NAME);	// e.g. Jan Slota, the name of person who published the article [REQUIRED]
+			ga('set', 'dimension26', PRIMARY_CATEGORY);	// e.g. Epoch Taste (or slug) [REQUIRED]
+			ga('set', 'dimension28', CATEGORY_LIST);	// e.g. ";Inspiration;Life;Uplift;Video;" list of categories separated by ; [REQUIRED]
+			ga('set', 'dimension30', PUBLISH_DATE);		// e.g. 20160722 Publish date in format YYYYMMDD [REQUIRED]
+			ga('set', 'dimension31', UPDATE_DATE);		// e.g. 20160724 Last update date in format YYYYMMDD [REQUIRED]
+			ga('set', 'dimension38', epoch.uuid);		// UUID loaded from cookie, using epochuser object [REQUIRED]
+			ga('set', 'dimension46', PLATFORM);			// "Instant Article", it identifies "web" platform from "Instant Article", casesensitive [REQUIRED]
+			
+			ga('set', 'dimension33', WORDCOUNT);		// e.g. 456, wordcount of the article [OPTIONAL]
+			ga('set', 'dimension29', TAG_LIST);			// e.g. ";quantum physics;neuroscience;" list of tags separated by ; [OPTIONAL]
+
+			ga('send', 'pageview');
+		</script>
+	</iframe>
+</figure>
