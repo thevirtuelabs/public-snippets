@@ -1,0 +1,3 @@
+db_connection_get : "mysql://username:password@address:3306/dabasename?charset=utf8mb4"
+db_connection_dump : "mysql://root:password@127.0.0.1:3306/GAPY?charset=utf8mb4"
+
