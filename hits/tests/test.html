@@ -1,0 +1,105 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+
+    // Store & Load unique User ID into cookie (localStorage)
+    function epochuser () {
+		this.getUUID = function getUUID () {
+			if (localStorage && "_epochUUID" in localStorage) {
+				euid = localStorage._epochUUID;
+			} else {
+				euid = this.euid();
+				localStorage.setItem("_epochUUID",this.euid());
+			}
+			return euid;
+		}
+		this.euid = function () {
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+				return v.toString(16);
+			});
+		}
+	}
+
+	// Identify user and website
+    var epoch = {}
+	var user = new epochuser();
+	epoch.uuid = user.getUUID();
+	epoch.site_name = "NTD Inspired";
+
+    var uuid = epoch.uuid;
+    var video_id = 'asd video_id';
+    var embed_url = 'asd embed_url';
+    var embed_domain = 'asd embed_domain';
+    var vendor_id = 'asd vendor_id';
+    var vendor_name = 'asd vendor_name';
+    var video_title = 'asd video_title';
+    var duration = '145';
+    var category_id = '123';
+    var resolution = 'asd resolution';
+    var b_instantArticle = '1';
+    var ymk_user = 'asd ymk_user';
+    var noads = '0';
+    var mute = '1';
+    var autoplay = '1';
+    var embed_protocol = 'asd embed_protocol';
+    var embed_pathname = 'asd embed_pathname';
+    var placement = 'asd_placement';
+    var root_domain = 'asd root_domain';
+
+    var hit_params = {
+        uuid: uuid,
+        video_id: video_id,
+        embed_url: embed_url,
+        embed_domain: embed_domain,
+        vendor_id: vendor_id,
+        vendor_name: vendor_name,
+        video_title: video_title,
+        duration: duration,
+        category_id: category_id,
+        resolution: resolution,
+        instantArticle: b_instantArticle,
+        ymk_user: ymk_user,
+        noads: noads,
+        mute: mute,
+        autoplay: autoplay,
+        embed_protocol: embed_protocol,
+        embed_pathname: embed_pathname,
+        placement: placement,
+        root_domain: root_domain
+    }
+
+
+    function sendHit(hit_class, event_name, params) {
+        var hit = params;
+        hit.hit_class = hit_class;
+        hit.event_name = event_name;
+
+        $.ajax({
+            url: "http://localhost/dev/public-snippets/hits/hit.php",
+            data: hit,
+            success: function (response) {
+                $('<li>' + response + '</li>').appendTo('.results');
+            }
+        })
+    }
+    
+    $(function() {
+        $(".send-btn").click(function () {
+            sendHit('ymhit', $(this).attr('data-event'), hit_params);
+        })
+    })
+
+
+
+</script>
+
+<h1>
+    Test YM hit
+</h1>
+<button class="send-btn" data-event="ad_request">Send Ad Request</button>
+<button class="send-btn" data-event="ad_impressions">Send Ad Impression</button>
+
+<ul class="results">
+
+</ul>
+
