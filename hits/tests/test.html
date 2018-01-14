@@ -75,7 +75,7 @@
         hit.event_name = event_name;
 
         $.ajax({
-            url: "http://localhost/dev/public-snippets/hits/hit.php",
+            url: "../hit.php",
             data: hit,
             success: function (response) {
                 $('<li>' + response + '</li>').appendTo('.results');
