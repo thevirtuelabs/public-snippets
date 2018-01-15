@@ -1,6 +1,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
 
+    var video_id = 'asd video_id';
+    var embed_url = 'asd embed_url';
+    var embed_domain = 'asd embed_domain';
+    var vendor_id = 'asd vendor_id';
+    var vendor_name = 'asd vendor_name';
+    var video_title = 'asd video_title';
+    var duration = '145';
+    var category_id = '123';
+    var resolution = 'asd resolution';
+    var b_instantArticle = '1';
+    var ymk_user = 'asd ymk_user';
+    var noads = '0';
+    var mute = '1';
+    var autoplay = '1';
+    var embed_protocol = 'asd embed_protocol';
+    var embed_pathname = 'asd embed_pathname';
+    var placement = 'asd_placement';
+    var root_domain = 'asd root_domain';
+
+    var hits_debug = true;
+
     // Store & Load unique User ID into cookie (localStorage)
     function epochuser () {
 		this.getUUID = function getUUID () {
@@ -20,31 +41,18 @@
 		}
 	}
 
+
 	// Identify user and website
     var epoch = {}
 	var user = new epochuser();
-	epoch.uuid = user.getUUID();
-	epoch.site_name = "NTD Inspired";
+	var uuid = user.getUUID();
 
-    var uuid = epoch.uuid;
-    var video_id = 'asd video_id';
-    var embed_url = 'asd embed_url';
-    var embed_domain = 'asd embed_domain';
-    var vendor_id = 'asd vendor_id';
-    var vendor_name = 'asd vendor_name';
-    var video_title = 'asd video_title';
-    var duration = '145';
-    var category_id = '123';
-    var resolution = 'asd resolution';
-    var b_instantArticle = '1';
-    var ymk_user = 'asd ymk_user';
-    var noads = '0';
-    var mute = '1';
-    var autoplay = '1';
-    var embed_protocol = 'asd embed_protocol';
-    var embed_pathname = 'asd embed_pathname';
-    var placement = 'asd_placement';
-    var root_domain = 'asd root_domain';
+
+
+
+    /*
+     Things to update 
+     */
 
     var hit_params = {
         uuid: uuid,
@@ -74,22 +82,68 @@
         hit.hit_class = hit_class;
         hit.event_name = event_name;
 
+        if(hits_debug) {
+            console.log('Sending hit ' + hit_class + ', event ' + event_name + ', params: ');
+            console.log(params);
+        }
+
         $.ajax({
+            method: "GET",
             url: "../hit.php",
             data: hit,
             success: function (response) {
-                $('<li>' + response + '</li>').appendTo('.results');
+                if(hits_debug) {
+                    console.log('Hit response: ' + response);
+                }
+            },
+            timeout: 5000,
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
             }
         })
     }
     
+
+    function trackPlayerLoaded() {
+        sendHit('ymhit', 'Player Loaded', hit_params);
+    }
+
+    // Video engagement tracking
+    function trackVideoPlay() {
+        sendHit('ymhit', 'Video Play', hit_params);
+    }
+
+    function trackVideoComplete() {
+        sendHit('ymhit', 'Video Complete', hit_params);
+    }
+
+    function trackVideoWatchedCompletedRate(percentage) {
+        sendHit('ymhit', 'Video completion rate ' + percentage + '%', hit_params);
+    }
+    function trackVideoWatchedCompletedTime(seconds) {
+        sendHit('ymhit', 'Video View '  + seconds + ' seconds', hit_params);
+    }
+
+    // available actions: 'Ad Impression', 'Ad Click', 'Ad Complete', 'Ad Error', 'Ad Skip'
+    function trackVideoAd(action) {
+        sendHit('ymhit', action, hit_params);
+        
+    }
+    function trackAdRequest() {
+        sendHit('ymhit', 'Ad Request', hit_params);
+    }
+
+
+
+
+
+
     $(function() {
         $(".send-btn").click(function () {
             sendHit('ymhit', $(this).attr('data-event'), hit_params);
         })
     })
-
-
 
 </script>
 

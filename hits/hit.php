@@ -8,9 +8,14 @@ if (!$_GET) {
 }
 
 
-// First fields: server side timestamp, hit class, event name
+// First fields: server side timestamp, hit class, event name, IP
+date_default_timezone_set('America/Los_Angeles');
 $responseData = array ();
 $responseData['timestamp'] = date("Y-m-d H:i:s");
+$responseData['hit_class'] = $_GET['hit_class'];
+$responseData['event_name'] = $_GET['event_name'];
+$responseData['ip'] = $_SERVER['REMOTE_ADDR'];
+
 
 
 // Make sure that fields are in consistent order and hit class is known
@@ -34,5 +39,5 @@ $file = null;
 // Good bye
 $end = microtime(1);
 $total = ($end - $start);
-echo 'Writing process completed in ' . round($total, 6) .'s.';
+echo 'Hit saved in ' . round($total, 6) .'s.';
 ?>
