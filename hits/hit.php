@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
 // We will be reading GET data
 $start = microtime(1);
 if (!$_GET) {
@@ -45,5 +45,9 @@ $file = null;
 // Good bye
 $end = microtime(1);
 $total = ($end - $start);
-echo json_encode(['Hit saved in ' . round($total, 6) .'s.']);
+$callback = (isset($_GET['callback']) ? $_GET['callback'] : null);
+if (isset($callback))
+    echo $callback . '(['.json_encode(['Hit saved in ' . round($total, 6) .'s.']).'])';
+else
+    echo '[JSON HERE]';
 ?>
