@@ -45,5 +45,5 @@ $file = null;
 // Good bye
 $end = microtime(1);
 $total = ($end - $start);
-echo 'Hit saved in ' . round($total, 6) .'s.';
+echo json_encode(['status' => 'Hit saved in ' . round($total, 6) .'s.']);
 ?>
