@@ -25,12 +25,18 @@ switch ($_GET['hit_class']) {
 }
 
 foreach ( $fields as $field ) {
-	array_push ( $responseData, $_GET[$field] );
+	$responseData[$field] = $_GET[$field];
+}
+
+// Just print headers?
+if($_GET['printheaders']) {
+	echo '"' . implode('","', array_keys($responseData)) . '"'; 
+	exit();
 }
 
 // Save data to CSV
 $csv_path = './data/';
-$filename = $_GET['hit_class'] . '__' . date('Y-m-d') . '__' . $_GET['event_name'] . '.csv';
+$filename = $_GET['hit_class'] . '__' . date('Y-m-d') . '.csv';
 $file = new SplFileObject ( $csv_path . $filename, 'a' );
 $file->fputcsv ( $responseData );
 $file = null;
