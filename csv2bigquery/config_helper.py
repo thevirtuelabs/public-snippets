@@ -2,9 +2,9 @@ import logging
 import os
 import sys
 
-import yaml
+# import yaml
 
-config = yaml.load(open(os.path.join(sys.path[0], 'config.yaml')))
+# config = yaml.load(open(os.path.join(sys.path[0], 'config.yaml')))
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)

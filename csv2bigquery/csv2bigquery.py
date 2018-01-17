@@ -5,19 +5,13 @@ correct columns corresponding with the csv file.
 import argparse
 import csv
 import os
-import re
 import sys
 from datetime import datetime
 
-import sqlalchemy.exc
-from google.cloud import bigquery
-from sqlalchemy import MetaData, and_, create_engine, text
-
-from config_helper import config, logger
-
+from config_helper import logger
+from bigquery_helper import BQManager
 
 __version__ = '0.1.0'
-
 
 def parse_console_params():
     """
@@ -33,7 +27,7 @@ def parse_console_params():
     return options
 
 
-def store_to_bq(options):
+def import_csv(options):
     """
     Load the csv file, and import it to BQ table according to the input options
     """
@@ -50,16 +44,12 @@ def store_to_bq(options):
 
     # Bigquery initialization
     # table is in the format "tnc-web:Operations.ymhits", let's split it by ":" and "."
-    parsed_table = re.split(r":|\.", options.table)
-    bq_client = bigquery.Client.from_service_account_json(os.path.join(sys.path[0], 'bigquery-secret.json'))
-    bq_dataset = bq_client.dataset(parsed_table[1])
-    bq_table_ref = bq_dataset.table(parsed_table[2])
-    bq_table = bq_client.get_table(bq_table_ref)
+    BQ = BQManager(options.table)
 
     with open(os.path.join(sys.path[0], options.file)) as csvfile:
         readCSV = csv.reader(csvfile, delimiter=',')
         next(readCSV)
-        stored_rows_counter = 0
+        row_buffer = []
         for row in readCSV:
             try:
                 TS = datetime.strptime(row[options.timefield], dt_format)
@@ -67,19 +57,17 @@ def store_to_bq(options):
                 if not in_range:
                     continue
 
-                errors = bq_client.create_rows(bq_table, [row])
-                if errors:
-                    logger.warning("BQ create_rows error (uuid: %s): %s", row[4], str(errors))
-                else:
-                    stored_rows_counter += 1
+                row_buffer.append(row)
+                if len(row_buffer) == 5000:
+                    BQ.store_rows(row_buffer)
+                    row_buffer = []
 
             except Exception as e:
-                    logger.warning(str(e))
+                logger.warning(str(e))
 
-            # if stored_rows_counter > 10:
-            #     break
+        BQ.store_rows(row_buffer)
 
-    logger.info("Stored %d rows", stored_rows_counter)
+    logger.info("Stored %d rows", BQ.number_of_stored_rows())
 
 
 def main():
@@ -92,7 +80,7 @@ def main():
     logger.info("Options = %s", options)
 
     # do the action
-    store_to_bq(options)
+    import_csv(options)
 
     script_end_time = datetime.now()
     logger.info("END csv2bigquery.py. Execution time = %s", script_end_time - script_start_time)

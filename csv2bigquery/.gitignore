@@ -102,6 +102,5 @@ ENV/
 
 ### CUSTOM ###
 
-config.yaml
 bigquery-secret.json
 /data
