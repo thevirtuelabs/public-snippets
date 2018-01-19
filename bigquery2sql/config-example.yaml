@@ -1,0 +1,2 @@
+
+mysql_connect: mysql://user:passwd@host:3306/db?charset=utf8mb4

@@ -1,0 +1,4 @@
+
+bq_select: SELECT post_id,created_time,post_impressions FROM `tnc-web.Operations.fb_posts` LIMIT 4500
+sql_table: fb_posts_import
+mode: insert
