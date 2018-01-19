@@ -1,4 +1,9 @@
 
-bq_select: SELECT post_id,created_time,post_impressions FROM `tnc-web.Operations.fb_posts` LIMIT 4500
-sql_table: fb_posts_import
-mode: insert
+# bq_select: SELECT post_id,created_time,post_impressions FROM `tnc-web.Operations.fb_posts` LIMIT 45
+# sql_table: fb_posts_import
+# mode: insert
+
+bq_select: SELECT order_id,article_id,timestamp_client,display_duration FROM `tnc-web.CoreProduct.user_engagement_signals` LIMIT 10
+sql_table: user_engagement_signals
+key_column: order_id
+mode: replace

@@ -1,5 +1,5 @@
 """
-Class for storing articles to database(s)
+Class for working with MySQL
 """
 from datetime import datetime
 
@@ -19,13 +19,15 @@ class SQLManager:
         self.transaction_size = 1000
 
 
-    def insert_rows(self, table_name, column_names, rows, mode='insert'):
+    def insert_rows(self, table_name, column_names, rows, key_column=None, mode='insert'):
         """
+        Insert rows (from BQ) to the MySQL table, transactions are used.
         """
-        sql_insert = text("INSERT INTO {}({}) VALUES({})".format(
-            table_name,
-            ",".join(column_names),
-            ",".join([':' + x for x in column_names])))
+        # first create the query according to the operational mode
+        sql_insert = self._create_sql_insert(table_name, column_names, key_column, mode)
+        if sql_insert is None:
+            logger.error("Unknown mode (%s) specified, don't know what to do", mode)
+            return
         logger.info("SQL query: %s", sql_insert)
 
         in_transaction = False
@@ -37,7 +39,8 @@ class SQLManager:
                         trans = conn.begin()
                         in_transaction = True
 
-                    conn.execute(sql_insert, {col: row[col] for col in column_names})
+                    dict_row = {col: row[col] for col in column_names}
+                    conn.execute(sql_insert, dict_row)
 
                     if in_transaction and index % self.transaction_size == (self.transaction_size - 1):
                         trans.commit()
@@ -55,6 +58,28 @@ class SQLManager:
 
         except Exception as e:
             logger.warning(str(e))
+
+
+    def _create_sql_insert(self, table_name, column_names, key_column, mode):
+        """
+        Construct the sql query for inserting rows
+        """
+        if mode == 'insert':
+            sql = text("INSERT INTO {}({}) VALUES({})".format(
+                table_name,
+                ",".join(column_names),
+                ",".join([':' + x for x in column_names])))
+
+        elif mode == 'replace':
+            sql = text("REPLACE INTO {}({}) VALUES({})".format(
+                table_name,
+                ",".join(column_names),
+                ",".join([':' + x for x in column_names])))
+
+        else:
+            sql = None
+
+        return sql
 
 
 SQL = SQLManager()

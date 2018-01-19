@@ -40,7 +40,7 @@ def perform_action():
     rows = BQ.execute_query(rules.get('bq_select'))
     column_names = BQ.get_column_names(rows)
 
-    SQL.insert_rows(rules.get('sql_table'), column_names, rows, rules.get('mode'))
+    SQL.insert_rows(rules.get('sql_table'), column_names, rows, rules.get('key_column'), rules.get('mode'))
 
 
 def main():
