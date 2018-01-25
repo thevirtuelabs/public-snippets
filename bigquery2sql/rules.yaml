@@ -5,5 +5,6 @@
 
 bq_select: SELECT order_id,article_id,timestamp_client,display_duration FROM `tnc-web.CoreProduct.user_engagement_signals` LIMIT 10
 sql_table: user_engagement_signals
-key_column: order_id
+
+# insertion modes: insert | insert_ignore | replace
 mode: replace

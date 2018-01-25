@@ -1,8 +1,10 @@
 """
 Class for working with MySQL
 """
+import warnings
 from datetime import datetime
 
+from sqlalchemy import exc as sa_exc
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
@@ -18,13 +20,16 @@ class SQLManager:
         self.engine = create_engine(config.get('mysql_connect'))
         self.transaction_size = 1000
 
+        # we want to filter 'Duplicate entry' warning for INSERT IGNORE
+        warnings.filterwarnings('ignore', '.*1062.*')
 
-    def insert_rows(self, table_name, column_names, rows, key_column=None, mode='insert'):
+
+    def insert_rows(self, table_name, column_names, rows, mode='insert'):
         """
         Insert rows (from BQ) to the MySQL table, transactions are used.
         """
         # first create the query according to the operational mode
-        sql_insert = self._create_sql_insert(table_name, column_names, key_column, mode)
+        sql_insert = self._create_sql_insert(table_name, column_names, mode)
         if sql_insert is None:
             logger.error("Unknown mode (%s) specified, don't know what to do", mode)
             return
@@ -60,12 +65,18 @@ class SQLManager:
             logger.warning(str(e))
 
 
-    def _create_sql_insert(self, table_name, column_names, key_column, mode):
+    def _create_sql_insert(self, table_name, column_names, mode):
         """
         Construct the sql query for inserting rows
         """
         if mode == 'insert':
             sql = text("INSERT INTO {}({}) VALUES({})".format(
+                table_name,
+                ",".join(column_names),
+                ",".join([':' + x for x in column_names])))
+
+        elif mode == 'insert_ignore':
+            sql = text("INSERT IGNORE INTO {}({}) VALUES({})".format(
                 table_name,
                 ",".join(column_names),
                 ",".join([':' + x for x in column_names])))
