@@ -1,6 +1,6 @@
 """
-Import CSV file into Bigquery table. The table must already exist, containing
-correct columns corresponding with the csv file.
+Import Bigquery table to mysql table. Importing rules will be defined in the separate
+yaml file, which will be given as an argument to the script.
 """
 import argparse
 import os
@@ -13,7 +13,6 @@ from bigquery_helper import BQ
 from config_helper import config, logger
 from mysql_helper import SQL
 
-
 __version__ = '0.1.0'
 
 def parse_console_params():
@@ -21,21 +20,17 @@ def parse_console_params():
     Command line parsing
     """
     parser = argparse.ArgumentParser(description="Bigquery to MySQL importer")
-    # parser.add_argument('--file', help='Input csv filename', required=True)
-    # parser.add_argument('--timefield', help="Index of the csv field containing the datetime", required=True, type=int)
-    # parser.add_argument('--starttime', help="Starting time in format YYYY-MM-DD hh:mm:ss", default='min')
-    # parser.add_argument('--endtime', help="Ending time in format YYYY-MM-DD hh:mm:ss", default='max')
-    # parser.add_argument('--table', help='Bigquery table where csv data will be stored', required=True)
+    parser.add_argument('--file', help='Input yaml filename with import rules', required=True)
     options = parser.parse_args()
     return options
 
 
-def perform_action():
+def perform_action(options):
     """
     The script action - load from BQ and store to MySQL
     """
     # load ETL rules
-    rules = yaml.load(open(os.path.join(sys.path[0], 'rules.yaml')))
+    rules = yaml.load(open(os.path.join(sys.path[0], options.file)))
 
     # get results from BQ
     rows = BQ.execute_query(rules.get('bq_select'))
@@ -55,7 +50,7 @@ def main():
     logger.info("Options = %s", options)
 
     # do things and stuff
-    perform_action()
+    perform_action(options)
 
     # pack and leave
     script_end_time = datetime.now()
